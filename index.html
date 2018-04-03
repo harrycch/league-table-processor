@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+<body>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	<script src="./js/Team.js" type="text/javascript"></script>
+	<script src="./js/main.js" type="text/javascript"></script>
+
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12">
+				<div class="dropdown text-center">
+					<button id="dropdown-year" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Select Year
+					</button>
+					<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+						<!-- <a class="dropdown-item" href="#">Action</a> -->
+					</div>
+				</div>
+			</div>
+			<div class="offset-1 col-4 text-center">
+				<h3>Original</h3>
+				<table id="original-table" class="table table-sm">
+					<thead>
+						<tr>
+							<th scope="col">#</th>
+							<th scope="col">Team</th>
+							<th scope="col">W</th>
+							<th scope="col">D</th>
+							<th scope="col">L</th>
+							<th scope="col">GS</th>
+							<th scope="col">GC</th>
+							<th scope="col">GD</th>
+							<th scope="col">P</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td scope="row" class="team-position"></td>
+							<td class="team-name"></td>
+							<td class="team-W"></td>
+							<td class="team-D"></td>
+							<td class="team-L"></td>
+							<td class="team-GS"></td>
+							<td class="team-GC"></td>
+							<td class="team-GD"></td>
+							<td class="team-P"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="offset-1 col-4 text-center">
+				<h3>New</h3>
+				<table id="new-table" class="table table-sm">
+					<thead>
+						<tr>
+							<th scope="col">#</th>
+							<th scope="col">Team</th>
+							<th scope="col">W</th>
+							<th scope="col">D</th>
+							<th scope="col">L</th>
+							<th scope="col">GS</th>
+							<th scope="col">GC</th>
+							<th scope="col">GD</th>
+							<th scope="col">P</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
