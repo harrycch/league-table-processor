@@ -1,7 +1,35 @@
 $(document).ready(function() {
-    console.log("document ready");
-    onYearChange("2011-12");
+    // console.log("document ready");
+    setupDropdown();
 });
+
+function getYearsAvailable(){
+    return [
+    "1998-99", "1999-00", "2000-01", "2001-02", "2002-03", "2003-04", "2004-05", "2005-06", "2006-07", "2007-08", 
+    "2008-09", "2009-10", "2010-11", "2011-12", "2012-13", "2013-14"
+    ];
+}
+
+function setupDropdown() {
+    var dropdown = $('#dropdown-year');
+    var drowdownBtn = dropdown.find(".dropdown-toggle");
+    var dropdownMenu = dropdown.find(".dropdown-menu");
+    var dropdownItem = dropdownMenu.find(".dropdown-item");
+    var years = getYearsAvailable();
+
+    for (var i = 0; i < years.length; i++) {
+        dropdownItem.clone()
+            .text(years[i])
+            .data("year", years[i])
+            .on("click", function(e) {
+                var year = $(e.target).data("year");
+                // console.log("clicking", year);
+                onYearChange(year);
+            })
+            .appendTo(dropdownMenu);
+    }
+    dropdownItem.remove();
+}
 
 function onYearChange(yearInput) {
     // console.log("onYearChange: "+yearInput);
@@ -101,6 +129,8 @@ function renderTeams(teams, table) {
     var tbody = table.find("tbody");
     var tr = tbody.find('tr')[0];
 
+    tbody.empty();
+
     for (var i = 0; i < teams.length; i++) {
         var position = i+1;
         var team = teams[i];
@@ -116,6 +146,4 @@ function renderTeams(teams, table) {
         newTr.find(".team-P").text(team.P);
         newTr.appendTo(tbody);
     }
-
-    tr.remove();
 }
