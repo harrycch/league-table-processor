@@ -1,6 +1,8 @@
 $(document).ready(function() {
     // console.log("document ready");
     setupDropdown();
+
+    $('#dropdown-year .dropdown-menu .dropdown-item').last().click();
 });
 
 function getYearsAvailable(){
@@ -12,7 +14,6 @@ function getYearsAvailable(){
 
 function setupDropdown() {
     var dropdown = $('#dropdown-year');
-    var drowdownBtn = dropdown.find(".dropdown-toggle");
     var dropdownMenu = dropdown.find(".dropdown-menu");
     var dropdownItem = dropdownMenu.find(".dropdown-item");
     var years = getYearsAvailable();
@@ -24,6 +25,8 @@ function setupDropdown() {
             .on("click", function(e) {
                 var year = $(e.target).data("year");
                 // console.log("clicking", year);
+
+                $("#dropdown-year .dropdown-toggle").text(year);
                 onYearChange(year);
             })
             .appendTo(dropdownMenu);
@@ -76,6 +79,7 @@ function processCSV(allText) {
 
 function processLines(lines) {
     var teams = [];
+    var ELOTeams = [];
 
     for (var i = 0; i < lines.length; i++) {
         var match = lines[i];
@@ -85,18 +89,25 @@ function processLines(lines) {
         var homeScore = getHomeScoreFromResult(result);
         var awayScore = getAwayScoreFromResult(result);
 
-        // console.log(homeTeamName+" "+homeScore+" : "+awayScore+" "+awayTeamName);
         var homeTeam = Team.searchOrCreateTeamByName(homeTeamName, teams);
-        homeTeam.addMatch(homeScore, awayScore);
-
         var awayTeam = Team.searchOrCreateTeamByName(awayTeamName, teams);
-        awayTeam.addMatch(awayScore, homeScore);
+        homeTeam.addMatch(homeScore, awayScore, awayTeam);
+
+        var ELOHomeTeam = Team.searchOrCreateTeamByName(homeTeamName, ELOTeams);
+        var ELOAwayTeam = Team.searchOrCreateTeamByName(awayTeamName, ELOTeams);
+        ELOHomeTeam.addMatchELO(homeScore, awayScore, ELOAwayTeam);
+
+        // console.log("Ori: ", homeTeam.name, homeTeam.P, awayTeam.name, awayTeam.P);
+        // console.log("New: ", newHomeTeam.name, newHomeTeam.P, newAwayTeam.name, newAwayTeam.P);
     }
 
     Team.sortTeams(teams);
+    Team.sortTeams(ELOTeams);
     
     var table = $('#original-table');
+    var ELOTable = $('#elo-table');
     renderTeams(teams, table);
+    renderTeams(ELOTeams, ELOTable);
 }
 
 function getTeamNameFromCSV(teamNameFromCSV) {
@@ -129,12 +140,17 @@ function renderTeams(teams, table) {
     var tbody = table.find("tbody");
     var tr = tbody.find('tr')[0];
 
+    // console.log("Rendering", table.attr("id"));
+
     tbody.empty();
 
     for (var i = 0; i < teams.length; i++) {
         var position = i+1;
         var team = teams[i];
         var newTr = $(tr).clone();
+
+        // console.log("render", team.name, team.P);
+
         newTr.find(".team-position").text(position);
         newTr.find(".team-name").text(team.name);
         newTr.find(".team-W").text(team.W);

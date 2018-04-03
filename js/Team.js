@@ -98,18 +98,55 @@ class Team{
 		return this._GS - this._GC;
 	}
 
-	addMatch(MGS, MGC) {
+	addMatch(MGS, MGC, opponent) {
 		if (MGS > MGC) {
 			this._W = this._W + 1;
+			opponent.L = opponent.L +1;
 			this._P = this._P + 3;
 		} else if (MGS < MGC) {
 			this._L = this._L + 1;
+			opponent.W = opponent.W + 1;
+			opponent.P = opponent.P + 3;
 		} else {
 			this._D = this._D + 1;
+			opponent.D = opponent.D + 1;
 			this._P = this._P + 1;
+			opponent.P = opponent.P + 1;
 		}
 
 		this._GS = this._GS + MGS;
 		this._GC = this._GC + MGC;
+		opponent.GS = opponent.GS + MGC;
+		opponent.GC = opponent.GC + MGS;
+	}
+
+	addMatchELO(MGS, MGC, opponent) {
+		var K = 60;
+		var thisE = 1/(1+Math.pow(10,(this.P-opponent.P)/400));
+		var oppoE = 1/(1+Math.pow(10,(opponent.P-this.P)/400));
+		var thisS = 0;
+		var oppoS = 0;
+
+		if (MGS > MGC) {
+			this._W = this._W + 1;
+			opponent.L = opponent.L + 1;
+			thisS = 1;
+		} else if (MGS < MGC) {
+			this._L = this._L + 1;
+			opponent.W = opponent.W + 1;
+			oppoS = 1;
+		} else {
+			this._D = this._D + 1;
+			opponent.D = opponent.D + 1;
+			thisS = oppoS = 0.5;
+		}
+
+		this._P = this._P + K*(thisS-thisE);
+		opponent.P = opponent.P + K*(oppoS-oppoE);
+
+		this._GS = this._GS + MGS;
+		this._GC = this._GC + MGC;
+		opponent.GS = opponent.GS + MGC;
+		opponent.GC = opponent.GC + MGS;
 	}
 }
