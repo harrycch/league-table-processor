@@ -24,6 +24,10 @@ class Team{
 	    	return -1
 	    if (team1.GD < team2.GD)
 	    	return 1
+	   	if (team1.GS > team2.GS)
+	    	return -1
+	    if (team1.GS < team2.GS)
+	    	return 1
 	    return 0;
 	}
 
@@ -98,6 +102,7 @@ class Team{
 		return this._GS - this._GC;
 	}
 
+	// Current point calculation
 	addMatch(MGS, MGC, opponent) {
 		if (MGS > MGC) {
 			this._W = this._W + 1;
@@ -120,6 +125,7 @@ class Team{
 		opponent.GC = opponent.GC + MGS;
 	}
 
+	// Use ELO as Points
 	addMatchELO(MGS, MGC, opponent) {
 		var K = 60;
 		var thisE = 1/(1+Math.pow(10,(this.P-opponent.P)/400));
@@ -143,6 +149,56 @@ class Team{
 
 		this._P = this._P + K*(thisS-thisE);
 		opponent.P = opponent.P + K*(oppoS-oppoE);
+
+		this._GS = this._GS + MGS;
+		this._GC = this._GC + MGC;
+		opponent.GS = opponent.GS + MGC;
+		opponent.GC = opponent.GC + MGS;
+	}
+
+	// +1 for Win, -1 for Lose, 0 for draw
+	addMatchPlusMinus(MGS, MGC, opponent){
+		if (MGS > MGC) {
+			this._W = this._W + 1;
+			opponent.L = opponent.L +1;
+			this._P = this._P + 1;
+			opponent.P = opponent.P - 1;
+		} else if (MGS < MGC) {
+			this._L = this._L + 1;
+			opponent.W = opponent.W + 1;
+			this._P = this._P - 1;
+			opponent.P = opponent.P + 1;
+		} else {
+			this._D = this._D + 1;
+			opponent.D = opponent.D + 1;
+			this._P = this._P + 0;
+			opponent.P = opponent.P + 0;
+		}
+
+		this._GS = this._GS + MGS;
+		this._GC = this._GC + MGC;
+		opponent.GS = opponent.GS + MGC;
+		opponent.GC = opponent.GC + MGS;
+	}
+
+	// +4 for Away win, +3 for Home win, +2 for away draw, +1 for home draw, 0 for lose
+	addMatchHomeAway(MGS, MGC, opponent){
+		if (MGS > MGC) {
+			this._W = this._W + 1;
+			opponent.L = opponent.L +1;
+			this._P = this._P + 3;
+			opponent.P = opponent.P + 0;
+		} else if (MGS < MGC) {
+			this._L = this._L + 1;
+			opponent.W = opponent.W + 1;
+			this._P = this._P + 0;
+			opponent.P = opponent.P + 4;
+		} else {
+			this._D = this._D + 1;
+			opponent.D = opponent.D + 1;
+			this._P = this._P + 1;
+			opponent.P = opponent.P + 2;
+		}
 
 		this._GS = this._GS + MGS;
 		this._GC = this._GC + MGC;

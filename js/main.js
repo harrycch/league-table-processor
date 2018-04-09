@@ -6,10 +6,17 @@ $(document).ready(function() {
 });
 
 function getYearsAvailable(){
-    return [
-    "1998-99", "1999-00", "2000-01", "2001-02", "2002-03", "2003-04", "2004-05", "2005-06", "2006-07", "2007-08", 
-    "2008-09", "2009-10", "2010-11", "2011-12", "2012-13", "2013-14"
-    ];
+    var years = [];
+    var MAX = 2013;
+    var NUM = 20;
+    for (var i = (MAX-NUM)+1; i <= MAX ; i++) {
+        var next = i+1;
+        var nextStr = next.toString().substr(-2);
+        var year = i.toString() + "-" + nextStr;
+        years.push(year);
+    }
+    // console.log("years available", years.length);
+    return years;
 }
 
 function setupDropdown() {
@@ -45,6 +52,7 @@ function onYearChange(yearInput) {
         success: function(data) {
             var lines = processCSV(data) || [];
             processLines(lines);
+            highlightRows();
         }
     });
 }
@@ -79,7 +87,7 @@ function processCSV(allText) {
 
 function processLines(lines) {
     var teams = [];
-    var ELOTeams = [];
+    var newTeams = [];
 
     for (var i = 0; i < lines.length; i++) {
         var match = lines[i];
@@ -93,21 +101,22 @@ function processLines(lines) {
         var awayTeam = Team.searchOrCreateTeamByName(awayTeamName, teams);
         homeTeam.addMatch(homeScore, awayScore, awayTeam);
 
-        var ELOHomeTeam = Team.searchOrCreateTeamByName(homeTeamName, ELOTeams);
-        var ELOAwayTeam = Team.searchOrCreateTeamByName(awayTeamName, ELOTeams);
-        ELOHomeTeam.addMatchELO(homeScore, awayScore, ELOAwayTeam);
+        var newHomeTeam = Team.searchOrCreateTeamByName(homeTeamName, newTeams);
+        var newAwayTeam = Team.searchOrCreateTeamByName(awayTeamName, newTeams);
+        /***** Change the addMatch function to use different types of points calculation******/
+        newHomeTeam.addMatchHomeAway(homeScore, awayScore, newAwayTeam);
 
         // console.log("Ori: ", homeTeam.name, homeTeam.P, awayTeam.name, awayTeam.P);
         // console.log("New: ", newHomeTeam.name, newHomeTeam.P, newAwayTeam.name, newAwayTeam.P);
     }
 
     Team.sortTeams(teams);
-    Team.sortTeams(ELOTeams);
+    Team.sortTeams(newTeams);
     
     var table = $('#original-table');
-    var ELOTable = $('#elo-table');
+    var newTable = $('#new-table');
     renderTeams(teams, table);
-    renderTeams(ELOTeams, ELOTable);
+    renderTeams(newTeams, newTable);
 }
 
 function getTeamNameFromCSV(teamNameFromCSV) {
@@ -161,5 +170,23 @@ function renderTeams(teams, table) {
         newTr.find(".team-GD").text(team.GD);
         newTr.find(".team-P").text(team.P);
         newTr.appendTo(tbody);
+    }
+}
+
+function highlightRows() {
+    var tableTr = $('#original-table tr');
+    var newTableTr = $('#new-table tr');
+
+    for (var i = 0; i < tableTr.length; i++) {
+        var oriTeamName = $(tableTr[i]).find('td.team-name').text() || "FOO";
+        var newTeamName = $(newTableTr[i]).find('td.team-name').text() || "BAR";
+        console.log('Checking for highlight: ',oriTeamName, newTeamName);
+        if(oriTeamName == newTeamName){
+            $(tableTr[i]).addClass('table-success');
+            $(newTableTr[i]).addClass('table-success');
+        }else {
+            $(tableTr[i]).removeClass('table-success');
+            $(newTableTr[i]).removeClass('table-success');
+        }
     }
 }
